@@ -1,12 +1,20 @@
 import { useEffect } from 'react';
 
-const useKeyPress = (key: string, action: Function) => {
+const useKeyPress = (key: string, correct: Function, incorrect: Function) => {
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === 'Backspace') {
-				action('Backspace');
-			} else if (e.key === key) {
-				action(key);
+				correct('Backspace');
+			} else if (e.key === ' ') {
+				correct(' ');
+			} else {
+				{
+					if (e.key === key) {
+						correct(key);
+					} else {
+						incorrect(key);
+					}
+				}
 			}
 		};
 
@@ -14,7 +22,7 @@ const useKeyPress = (key: string, action: Function) => {
 		return () => {
 			window.removeEventListener('keydown', handleKeyDown);
 		};
-	}, [key, action]);
+	}, [key, correct, incorrect]);
 };
 
 export default useKeyPress;

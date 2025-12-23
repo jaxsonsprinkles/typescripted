@@ -8,7 +8,7 @@ export default function Home() {
 	// [word index, letter index]
 	const [index, setIndex] = useState<Array<number>>([0, 0]);
 
-	const onClick = (key: string) => {
+	const correct = (key: string) => {
 		let [word, letter] = index;
 		let nextLetter = letter + 1;
 		let nextWord = word;
@@ -31,18 +31,24 @@ export default function Home() {
 				console.log('backspaced');
 				nextLetter -= 2;
 			}
+		} else if (key === ' ') {
+			console.log('space pressed, moving to next word');
+			nextWord += 1; // Move to the next word
+			nextLetter = 0; // Reset letter index
 		} else {
 			if (words[word] && words[word][letter + 1] === undefined) {
-				nextWord += 1;
-				nextLetter = 0;
-				console.log('next word');
+				console.log('end of word, press space');
 			}
 		}
 		console.log('next index: ' + nextWord + ' ' + nextLetter);
 		setIndex([nextWord, nextLetter]);
 	};
 
-	const listener = useKeyPress(words[index[0]][index[1]], onClick);
+	const incorrect = (key: string) => {
+		console.log('incorrect key pressed. you were supposed to press ' + key);
+	};
+
+	const listener = useKeyPress(words[index[0]][index[1]], correct, incorrect);
 
 	return (
 		<div className='flex flex-col space-y-3 items-center justify-center h-screen'>
@@ -70,7 +76,24 @@ export default function Home() {
 			</div>
 			<code className='p-8 rounded-xl bg-base-200 w-5/6 lg:w-2/3'>
 				{words.map((word, i) => {
-					return <span key={i}>{word} </span>;
+					return (
+						<span key={i}>
+							{word.split('').map((letter, j) => {
+								return (
+									<span
+										key={`${i}-${j}`}
+										className={
+											i < index[0] || (i === index[0] && j <= index[1] - 1)
+												? 'text-white-500'
+												: 'text-base-content/30'
+										}
+									>
+										{letter}
+									</span>
+								);
+							})}{' '}
+						</span>
+					);
 				})}
 			</code>
 		</div>
