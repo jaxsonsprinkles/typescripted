@@ -2,12 +2,11 @@
 
 import useKeyPress from "@/hooks/useKeyPress";
 import { useEffect, useRef, useState } from "react";
-
+import snippets from "@/lib/snippets";
 export default function Home() {
-  const words = ["hello", "world", "\n", "react", "javascript"];
+  const [words, setWords] = useState<Array<string>>(snippets.python);
   // [word index, letter index]
   const [index, setIndex] = useState<Array<number>>([0, 0]);
-
   const caretRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -86,7 +85,7 @@ export default function Home() {
             return <br key={i} />;
           }
           return (
-            <span key={i} className="whitespace-nowrap">
+            <span key={i} className="">
               {word.split("").map((letter, j) => {
                 const isActive = i === index[0] && j === index[1];
                 const isTyped =
