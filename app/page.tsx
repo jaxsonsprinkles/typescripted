@@ -4,7 +4,7 @@ import useKeyPress from "@/hooks/useKeyPress";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
-  const words = ["hello", "world", "typescript", "react", "javascript"];
+  const words = ["hello", "world", "\n", "react", "javascript"];
   // [word index, letter index]
   const [index, setIndex] = useState<Array<number>>([0, 0]);
 
@@ -36,6 +36,14 @@ export default function Home() {
       }
     } else if (key === " ") {
       nextWord += 1;
+      nextLetter = 0;
+    } else if (key === "Enter") {
+      // If the next word token is a newline, skip it with a single Enter press.
+      if (words[nextWord + 1] === "\n") {
+        nextWord += 2;
+      } else {
+        nextWord += 1;
+      }
       nextLetter = 0;
     }
     console.log("next index: " + nextWord + " " + nextLetter);
@@ -74,6 +82,9 @@ export default function Home() {
       </div>
       <code className="p-8 rounded-xl bg-base-200 w-5/6 lg:w-2/3">
         {words.map((word, i) => {
+          if (word === "\n") {
+            return <br key={i} />;
+          }
           return (
             <span key={i} className="whitespace-nowrap">
               {word.split("").map((letter, j) => {
