@@ -6,18 +6,21 @@ const useKeyPress = (
   incorrect: Function
 ) => {
   useEffect(() => {
-    if (!key) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Handle navigation keys first
       if (e.key === "Backspace" || e.key === " " || e.key === "Enter") {
+        e.preventDefault();
         correct(e.key);
-      } else {
-        {
-          if (e.key === key) {
-            correct(key);
-          } else {
-            incorrect(key);
-          }
+        return;
+      }
+
+      // If a target key is provided, compare against it
+      if (key !== undefined) {
+        if (e.key === key) {
+          e.preventDefault();
+          correct(key);
+        } else {
+          incorrect(key);
         }
       }
     };
